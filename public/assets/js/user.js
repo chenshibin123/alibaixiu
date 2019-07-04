@@ -22,7 +22,7 @@ $('#userForm').on('submit', function () {
     return false
 })
 //当用户选择文件的时候
-$('#avatar').on('change', function () {
+$('#modifyUser').on('change', '#avatar', function () {
     this.files[0]
     var formData = new FormData()
     formData.append('avatar', this.files[0])
@@ -38,3 +38,33 @@ $('#avatar').on('change', function () {
         }
     })
 })
+$('#tbody').on('click', '.edit', function () {
+    var id = $(this).attr('data-id')
+    $.ajax({
+        type: 'get',//get或post
+        url: '/users/' + id,//请求的地址
+        data: {},//如果不需要传，则注释掉 请求的参数，a=1&b=2或{a:1,b:2}或者jq中的serialize方法，或者formData收集
+        dataType: 'json',
+        success: function (result) {//成功的回调函数
+            console.log(result);
+            var html = template('modifyTpl', result)
+            $('#modifyUser').html(html)
+        }
+    })
+})
+$('#modifyUser').on('submit', '#modifyForm', function () {
+    var formData = $(this).serialize()
+    var id = $(this).attr('data-id')
+    $.ajax({
+        type: 'put',//get或post
+        url: '/users/' + id,//请求的地址
+        data: formData,//如果不需要传，则注释掉 请求的参数，a=1&b=2或{a:1,b:2}或者jq中的serialize方法，或者formData收集
+        success: function (result) {//成功的回调函数
+            location.reload()
+
+        }
+    })
+    return false
+})
+
+
